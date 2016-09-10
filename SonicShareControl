@@ -1,0 +1,9 @@
+<html>
+
+<script src="FrequencyPlayer.js" type="text/javascript"></script>
+
+<h1> Sonic Sharing </h1>
+<button onclick="playFrequency()">Play Frequency</button>
+<button onclick="stopFrequency()">Stop Frequency</button>
+
+</html>
