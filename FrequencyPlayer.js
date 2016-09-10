@@ -63,5 +63,5 @@ function playOneSound(freq) {
     setTimeout(function() {
          oscillator.stop()
          frequencyIndex++;
-     }, 100);
+     }, 145);
 }
