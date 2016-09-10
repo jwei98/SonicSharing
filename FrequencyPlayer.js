@@ -29,23 +29,34 @@ function sendFullFrequency() {
   var fullBase64String = document.getElementById('base64textarea').value;
   var startIndex = fullBase64String.indexOf(",") + 1;
   var frequencyArray = [];
+
   for (var i = startIndex; i < fullBase64String.length; i++) {
       var index = base64String.indexOf(fullBase64String[i]);
-      var freq = (index * 250) + 4000;
+      var freq = (index * 50) + 2000;
       frequencyArray.push(freq);
   }
 
   console.log(frequencyArray);
 
   for (var j = 0; j < frequencyArray.length; j++) {
-      setTimeout(function(){playSingleFrequency(frequencyArray[j]);},2000);
-      setTimeout(function(){oscillator.stop();},4000);
+    oscillator = context.createOscillator();
+    oscillator.connect(context.destination);
+    oscillator.frequency.value = frequencyArray[j];
+    oscillator.start();
+    // delay for two seconds
+    waitForDuration(100);
+    oscillator.stop()
+    waitForDuration(25);
   }
+}
 
-function playSingleFrequency(freq) {
-  oscillator = context.createOscillator();
-  oscillator.connect(context.destination);
-  oscillator.frequency.value = freq;
-  console.log("start");
-  oscillator.start();
+function waitForDuration(milliseconds) {
+  var start = new Date().getTime();
+  while (true) {
+    var end = new Date().getTime();
+    var time = end - start;
+    if (time >= milliseconds) {
+      break;
+    }
+  }
 }
