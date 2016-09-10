@@ -6,11 +6,22 @@
 
   <h1> Sonic Sharing </h1>
 
-  <!-- division that contains both buttons -->
+  <!-- division that contains both buttons
   <div class= "buttons">
     <button onclick="playFrequency()">Play Frequency</button>
     <button onclick="stopFrequency()">Stop Frequency</button>
   </div>
+  -->
+
+  <!-- plays desired frequency -->
+  <form name="noteField" action="playFrequency()">
+  Note:<br>
+  <input type="text" name="note">
+  <input type="submit" value="Submit">
+</form>
+
+<br>
+<br>
 
 <!-- handles picking file and converting to base 64 -->
   <div>
@@ -27,7 +38,6 @@
 
 <script>
   if (window.File && window.FileReader && window.FileList && window.Blob) {
-      console.log("b");
       document.getElementById('filePicker').addEventListener('change', handleFileSelect, false);
   } else {
       alert('The File APIs are not fully supported in this browser.');
