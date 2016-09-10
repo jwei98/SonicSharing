@@ -25,6 +25,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "jquery": "^3.1.0",
     "lodash": "^4.15.0"
   }
 }

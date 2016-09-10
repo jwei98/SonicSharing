@@ -1,5 +1,9 @@
 var context = new AudioContext();
+const b64 = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/`;
 var _ = require('lodash');
+var $ = require('jquery');
+var listening = false;
+var ready = false;
 
 navigator.getUserMedia({
   audio: {
@@ -25,8 +29,8 @@ function init(stream) {
   var streamAnalyzer = context.createAnalyser(); // 3
   var biquadFilter = context.createBiquadFilter();
 
-  biquadFilter.frequency = 1900;
-  biquadFilter.type = "highshelf";
+  biquadFilter.frequency = 1950;
+  biquadFilter.type = "highpass";
   biquadFilter.gain.value = 10.0;
 
   baseline.gain.value = 0.0;
@@ -37,16 +41,43 @@ function init(stream) {
   biquadFilter.connect(streamAnalyzer);
   gain.connect(baseline);
   baseline.connect(context.destination);
-  main(streamAnalyzer);
-}; 
+
+  $('#status').html("Ready");
+
+  main(streamAnalyzer, listening);
+};
 
 function main(streamAnalyzer) {
-  var data = new Uint8Array(streamAnalyzer.frequencyBinCount);  
+  var data = new Uint8Array(streamAnalyzer.frequencyBinCount);
   streamAnalyzer.getByteFrequencyData(data);
 
   var multiplier = 48000 / streamAnalyzer.fftSize;
+
+  // lolHz - basically Hertz, but wrong!
+  var lolhz = Math.round(data.indexOf(_.max(data)) * multiplier);
+  var lolhz_normalized = 50 * Math.floor(lolhz / 50 + 0.5);
+
+  if (listening) {
+    updateTransmission(lolhz, lolhz_normalized);
+  } else if (lolhz_normalized === 2800 && !ready) {
+    $('#status').html("Signal received");
+    setTimeout(() => {
+      listening = ready;
+      if(!listening) $('#status').html("Ready");
+    }, 3000);
+  }
+
+  ready = lolhz_normalized === 2800;
+  if(listening) {
+    setTimeout(() => main(streamAnalyzer), 150);
+  } else {
+    setTimeout(() => main(streamAnalyzer), 0);
+  }
   
-  document.getElementById('freq').innerHTML = Math.round(data.indexOf(_.max(data)) * multiplier)
-    + " lolHz 2";
-  setTimeout(() => main(streamAnalyzer), 10);
+};
+
+function updateTransmission(hz, normalized) {
+  $('#status').html("Now listening");
+  $('#freq').html("Current: " + hz);
+  $('#transmission').append(b64[(normalized - 2000) / 50]);
 }
