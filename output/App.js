@@ -52,8 +52,7 @@ var frequencyIndex = 0;
 var intervalVar;
 
 var play = function playFrequency() {
-		console.log
-    var testBase64String = document.getElementsByName('noteField')[0].value;
+    var testBase64String = document.getElementById('base64textarea').value;
 
     // create an array of the needed frequencies to play
     var frequencyArray = [];
@@ -83,47 +82,6 @@ var stop = function stopFrequency() {
     oscillator.stop(0);
 }
 
-var sendFull = function sendFullFrequency() {
-  var fullBase64String = document.getElementById('base64textarea').value;
-  var startIndex = fullBase64String.indexOf(",") + 1;
-  var frequencyArray = [];
-	var b64indices = [];
-
-  for (var i = startIndex; i < fullBase64String.length; i++) {
-      var index = b64.indexOf(fullBase64String[i]);
-			b64indices.push(index);
-      var freq = (index * 50) + 2000;
-      frequencyArray.push(freq);
-  }
-	console.log(b64indices);
-  // Play a sound every 150 milliseconds
-  frequencyIndex = 0;
-	var count = 0;
-  intervalVar = setInterval(() => {
-			lightUp(b64indices[count]);
-			count++;
-      this.playOneSound(frequencyArray)
-  }, 150);
-
-}
-
-var playOne = function playOneSound(freq) {
-    if (frequencyIndex >= freq.length) {
-        clearInterval(intervalVar)
-        oscillator.stop();
-        return;
-    }
-
-    oscillator = context.createOscillator();
-    oscillator.connect(context.destination);
-    oscillator.frequency.value = freq[frequencyIndex];
-    oscillator.start();
-    setTimeout(function() {
-         oscillator.stop()
-         frequencyIndex++;
-     }, 145);
-}
-
 listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'DarkOrange','rgb(140, 125, 51)','rgb(255, 153, 51)',
 							'Gold', 'Yellow','rgb(240, 255, 51)','rgb(204, 255, 51)', 'GreenYellow','LimeGreen', '	rgb(135, 255, 51)','	rgb(120, 255, 51)',
 							'LawnGreen','rgb(110, 255, 51)','rgb(125,255,1)','rgb(102, 255, 51)	','rgb(51, 255, 51)','Green','Green','rgb(51, 255, 51)',
@@ -148,9 +106,7 @@ function lightUp(index) {
 
 module.exports = {
   playFrequency: play,
-  stopFrequency: stop,
-  sendFullFrequency: sendFull,
-  playOneSound: playOne,
+  stopFrequency: stop
 }
 
 },{}],4:[function(require,module,exports){
