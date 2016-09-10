@@ -1,6 +1,6 @@
 window._ = require('lodash');
 window.context = new AudioContext();
-window.b64 = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/`;
+window.b64 = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=`;
 window.$ = require('jquery');
 
 var handleFileSelect = require('./FileHandler');

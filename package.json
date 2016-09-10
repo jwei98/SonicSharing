@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently -k \"npm run watch\" \"http-server\"",
-    "watch": "watchify js/App.js -o output/App.js",
+    "start": "concurrently -k \"npm run watch\" \"node bin/www\"",
+    "watch": "watchify public/js/App.js -o public/output/App.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,7 +25,12 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "hbs": "^4.0.0",
     "jquery": "^3.1.0",
-    "lodash": "^4.15.0"
+    "lodash": "^4.15.0",
+    "morgan": "^1.7.0",
+    "path": "^0.12.7"
   }
 }

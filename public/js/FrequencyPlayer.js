@@ -6,14 +6,16 @@ var play = function playFrequency() {
 
     // create an array of the needed frequencies to play
     var frequencyArray = [];
+    
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
         var freq = (index * 50) + 2000;
-        frequencyArray.push([freq, 0.350]);
-        frequencyArray.push([1950, 0.350]); // separator tone
+        frequencyArray.push([freq, 0.50]);
+        frequencyArray.push([1950, 0.50]); // separator tone
     }
 
     console.log(frequencyArray);
+    frequencyArray.push([1900, 0.5]);
 
     var previousTime = 0;
     for (var i = 0; i < frequencyArray.length; i++) {
