@@ -1,4 +1,4 @@
-var listening = false;
+var listening = true;
 var ready = false;
 
 var init = function init(stream) {
@@ -13,8 +13,8 @@ var init = function init(stream) {
   var streamAnalyzer = context.createAnalyser(); // 3
   var biquadFilter = context.createBiquadFilter();
 
-  biquadFilter.frequency = 1950;
-  biquadFilter.type = "highpass";
+  biquadFilter.frequency = 1800;
+  biquadFilter.type = "highshelf";
   biquadFilter.gain.value = 10.0;
 
   baseline.gain.value = 0.0;
@@ -49,22 +49,33 @@ var main = function main(streamAnalyzer) {
     setTimeout(() => {
       listening = ready;
       if(!listening) $('#status').html("Ready");
-    }, 3000);
+    }, 1000);
   }
 
   ready = lolhz_normalized === 2800;
   if(listening) {
-    setTimeout(() => this.main(streamAnalyzer), 0);
+    setTimeout(() => this.main(streamAnalyzer), 50);
   } else {
     setTimeout(() => this.main(streamAnalyzer), 0);
   }
 
 };
 
+var currChar;
+var separator = false;
 var updateTransmission = function updateTransmission(hz, normalized) {
   $('#status').html("Now listening");
   $('#freq').html("Current: " + hz);
-  $('#transmission').append(b64[(normalized - 2000) / 50]);
+  if (normalized === 1950) {
+    // $('#transmission').append('|');
+    separator = true;
+  } else if (separator) {
+    $('#transmission').append(currChar);
+    separator = false;
+  }
+  else {
+    currChar = b64[(normalized - 2000) / 50];
+  }
 }
 
 module.exports = {

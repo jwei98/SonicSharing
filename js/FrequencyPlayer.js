@@ -9,21 +9,24 @@ var play = function playFrequency() {
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
         var freq = (index * 50) + 2000;
-        frequencyArray.push([freq, 0.025]);
-        frequencyArray.push([1900, 0.025]); // separator tone
+        frequencyArray.push([freq, 0.200]);
+        frequencyArray.push([1950, 0.200]); // separator tone
     }
 
     console.log(frequencyArray);
 
+    var previousTime = 0;
     for (var i = 0; i < frequencyArray.length; i++) {
       var oscillator = context.createOscillator();
       var tone = frequencyArray[i][0];
       var duration = frequencyArray[i][1];
       oscillator.frequency.value = tone;
       oscillator.connect(context.destination);
-      oscillator.start(context.currentTime +　i * duration);
+      oscillator.start(context.currentTime + i * duration);
       setTimeout(() => $('#sound').append('+'), i * duration * 1000);
+      // previousTime = ;
       oscillator.stop(context.currentTime + i * duration + duration);
+
     }
 }
 
