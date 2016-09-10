@@ -46,7 +46,7 @@ var sendFull = function sendFullFrequency() {
 
   // Play a sound every 150 milliseconds
   frequencyIndex = 0;
-  intervalVar = setInterval(function() {
+  intervalVar = setInterval(() => {
       this.playOneSound(frequencyArray)
   }, 150);
 
