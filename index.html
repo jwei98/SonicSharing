@@ -1,15 +1,24 @@
+<!DOCTYPE html>
 <html>
-  <!-- import javascript scripts & CSS -->
-  <script src="/js/FrequencyPlayer.js" type="text/javascript"></script>
-  <script src="/js/FileHandler.js" type="text/javascript"></script>
-  <script src="/output/Receiver.js" type="text/javascript"></script>
-
+  <head>
+    <script src="/output/App.js" type="text/javascript"></script>
   <!-- link rel="stylesheet" type="text/css" href="SonicSharingCSS.css" -->
+    <style type="text/css">
+      pre {
+       white-space: pre-wrap;       /* css-3 */
+       white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+       white-space: -pre-wrap;      /* Opera 4-6 */
+       white-space: -o-pre-wrap;    /* Opera 7 */
+       word-wrap: break-word;       /* Internet Explorer 5.5+ */
+      }
+    </style>
+  </head>
   <body>
       <h1> Sonic Sharing </h1>
       <h2 id="freq"></h2>
       <p id="status"></p>
       <pre id="transmission"></pre>
+      <pre id="sound"></pre>
 
       <!-- division that contains both buttons
       <div class= "buttons">
@@ -21,8 +30,8 @@
       <!-- plays desired frequency -->
       Note:<br>
                 <input name="noteField" type="text">
-                <button onClick="playFrequency()"> Play Note </button>
-                <button onclick="stopFrequency()">Stop Note</button>
+                <button onclick="FrequencyPlayer.playFrequency()"> Play Note </button>
+                <button onclick="FrequencyPlayer.stopFrequency()">Stop Note</button>
             <br>
         <br>
 
@@ -38,14 +47,6 @@
                 <textarea id="base64textarea" placeholder="Base64 will appear here" cols="50" rows="15"></textarea>
             </div>
           </div>
-
-        <script>
-          if (window.File && window.FileReader && window.FileList && window.Blob) {
-              document.getElementById('filePicker').addEventListener('change', handleFileSelect, false);
-          } else {
-              alert('The File APIs are not fully supported in this browser.');
-          }
-        </script>
 
         <br>
         <br>

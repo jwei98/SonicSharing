@@ -1,23 +1,7 @@
-var context = new AudioContext();
-const b64 = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/`;
-var _ = require('lodash');
-var $ = require('jquery');
 var listening = false;
 var ready = false;
 
-navigator.getUserMedia({
-  audio: {
-    mandatory: {
-      googEchoCancellation: "false",
-      googAutoGainControl: "false",
-      googNoiseSuppression: "false",
-      googHighpassFilter: "false"
-    },
-    optional: []
-  }
-}, init, e => console.error(e));
-
-function init(stream) {
+var init = function init(stream) {
   // [1] Creates GainNode (controls volume?)
   // [2] Creates MediaStreamAudioSourceNode
   // [3] Creates an AnalyserNode for collecting frequency results
@@ -44,10 +28,10 @@ function init(stream) {
 
   $('#status').html("Ready");
 
-  main(streamAnalyzer, listening);
+  this.main(streamAnalyzer, listening);
 };
 
-function main(streamAnalyzer) {
+var main = function main(streamAnalyzer) {
   var data = new Uint8Array(streamAnalyzer.frequencyBinCount);
   streamAnalyzer.getByteFrequencyData(data);
 
@@ -58,7 +42,8 @@ function main(streamAnalyzer) {
   var lolhz_normalized = 50 * Math.floor(lolhz / 50 + 0.5);
 
   if (listening) {
-    updateTransmission(lolhz, lolhz_normalized);
+    this.updateTransmission(lolhz, lolhz_normalized);
+    // console.log(lolhz_normalized);
   } else if (lolhz_normalized === 2800 && !ready) {
     $('#status').html("Signal received");
     setTimeout(() => {
@@ -69,15 +54,21 @@ function main(streamAnalyzer) {
 
   ready = lolhz_normalized === 2800;
   if(listening) {
-    setTimeout(() => main(streamAnalyzer), 150);
+    setTimeout(() => this.main(streamAnalyzer), 0);
   } else {
-    setTimeout(() => main(streamAnalyzer), 0);
+    setTimeout(() => this.main(streamAnalyzer), 0);
   }
 
 };
 
-function updateTransmission(hz, normalized) {
+var updateTransmission = function updateTransmission(hz, normalized) {
   $('#status').html("Now listening");
   $('#freq').html("Current: " + hz);
   $('#transmission').append(b64[(normalized - 2000) / 50]);
+}
+
+module.exports = {
+  init,
+  main,
+  updateTransmission
 }
