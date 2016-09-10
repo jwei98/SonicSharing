@@ -54,7 +54,7 @@ var main = function main(streamAnalyzer) {
 
   ready = lolhz_normalized === 2800;
   if(listening) {
-    setTimeout(() => this.main(streamAnalyzer), 50);
+    setTimeout(() => this.main(streamAnalyzer), 0);
   } else {
     setTimeout(() => this.main(streamAnalyzer), 0);
   }
