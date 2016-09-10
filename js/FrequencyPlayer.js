@@ -3,7 +3,7 @@ var frequencyIndex = 0;
 var intervalVar;
 
 var play = function playFrequency() {
-		console.log("playing");
+		console.log
     var testBase64String = document.getElementsByName('noteField')[0].value;
 
     // create an array of the needed frequencies to play
@@ -46,12 +46,13 @@ var sendFull = function sendFullFrequency() {
       var freq = (index * 50) + 2000;
       frequencyArray.push(freq);
   }
-
+	console.log(b64indices);
   // Play a sound every 150 milliseconds
   frequencyIndex = 0;
-	lightUp(b64indices[index]);
-	console.log("light up!");
+	var count = 0;
   intervalVar = setInterval(() => {
+			lightUp(b64indices[count]);
+			count++;
       this.playOneSound(frequencyArray)
   }, 150);
 
@@ -84,6 +85,8 @@ listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'D
 							'Fuchsia','rgb(255,1,153)','rgb(255, 51, 125)','rgb(255, 51, 102)','rgb(255, 51, 80)','Crimson','Crimson','red']
 
 function lightUp(index) {
+
+	console.log("lighting up")
 	console.log(index);
 	var j = Math.floor(index/8);
 	var i = index % 8;
@@ -98,5 +101,5 @@ module.exports = {
   playFrequency: play,
   stopFrequency: stop,
   sendFullFrequency: sendFull,
-  playOneSound: playOne
+  playOneSound: playOne,
 }

@@ -57,22 +57,20 @@
 		<br>
 		<!-- CREATE TABLE -->
     <script>
-    var mytable = "<table id=\"table\" cellpadding=\"30px\" cellspacing=\"0\"><tbody><tr>";
+		var mytable = "<table id=\"table\" cellpadding=\"25\" cellspacing=\"0\"><tbody><tr>";
 
-    for (var i = 0; i < 64; i++) {
-      if (i % 8 == 0) {
-        mytable += "</tr><tr>";
-      }
-			var number = i+1
-      mytable += "<td id=i></td>";
-    }
+		for (var i = 0; i < 64; i++) {
+		  if (i % 8 == 0) {
+		    mytable += "</tr><tr>";
+		  }
+		  mytable += "<td>[" + i + "]</td>";
+		}
 
-    mytable += "</tr></tbody></table>";
+		mytable += "</tr></tbody></table>";
 
-    document.write(mytable);
-    </script>
+		document.write(mytable);
+		</script>
 
 		<br>
 		<br>
-
 </html>
