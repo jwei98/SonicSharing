@@ -166,7 +166,7 @@ var main = function main(streamAnalyzer) {
   var data = new Uint8Array(streamAnalyzer.frequencyBinCount);
   streamAnalyzer.getByteFrequencyData(data);
 
-  var multiplier = 48000 / streamAnalyzer.fftSize;
+  var multiplier = context.sampleRate / streamAnalyzer.fftSize;
 
   // lolHz - basically Hertz, but wrong!
   var lolhz = Math.round(data.indexOf(_.max(data)) * multiplier);
@@ -206,6 +206,9 @@ var updateTransmission = function updateTransmission(hz, normalized) {
   }
   else {
     currChar = b64[(normalized - 2000) / 50];
+    if (currChar) {
+
+    }
   }
 }
 
