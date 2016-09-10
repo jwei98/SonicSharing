@@ -10,14 +10,14 @@ button {
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
-    display: block;
+    display: inline-block;
     font-size: 18px;
     margin-top: 50px;
     margin: 10 auto;
     border-style: double;
       border-radius: 25px;
       background: ##73C2D2;
-      padding: 15px; 
+      padding: 15px;
       width: 180px;
       height: 55px;
 }
@@ -25,6 +25,7 @@ button {
 /* CSS for division that contains buttons */
 .buttons {
   height:150px;
+  margin-left: 20px;
   margin: 0 auto;
   width: 50%;
 }

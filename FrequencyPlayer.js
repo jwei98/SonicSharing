@@ -3,7 +3,6 @@ context = new AudioContext();
 var base64String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 function playFrequency() {
-    console.log("gottem");
     var testBase64String = document.getElementsByName('noteField')[0].value;
 
     // create an array of the needed frequencies to play
