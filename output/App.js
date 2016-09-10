@@ -154,9 +154,9 @@ function lightUp(index) {
 	var i = index % 8;
 	console.log(listColors[index])
 	document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = listColors[index];
-	setTimeout(function() {
+	/*setTimeout(function() {
 		document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = "White";
-	}, 145);
+	}, 145);*/
 }
 
 module.exports = {
