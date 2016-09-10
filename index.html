@@ -1,15 +1,54 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <script src="/SonicSharing/FrequencyPlayer.js" type="text/javascript"></script>
-  <script src="/js/Receiver.js" type="text/javascript"></script>
-</head>
-<body>
-  <h1> Sonic Sharing </h1>
-  <h2 id="freq"></h2>
-  <p id="status"></p>
-  <button onclick="playFrequency()">Play Frequency</button>
-  <button onclick="stopFrequency()">Stop Frequency</button>
-  <pre id="transmission"></pre>
-</body>
+  <!-- import javascript scripts & CSS -->
+  <script src="/js/FrequencyPlayer.js" type="text/javascript"></script>
+  <script src="/js/FileHandler.js" type="text/javascript"></script>
+  <script src="/output/Receiver.js" type="text/javascript"></script>
+
+  <!-- link rel="stylesheet" type="text/css" href="SonicSharingCSS.css" -->
+  <body>
+      <h1> Sonic Sharing </h1>
+      <h2 id="freq"></h2>
+      <p id="status"></p>
+      <pre id="transmission"></pre>
+
+      <!-- division that contains both buttons
+      <div class= "buttons">
+        <button onclick="playFrequency()">Play Frequency</button>
+        <button onclick="stopFrequency()">Stop Frequency</button>
+      </div>
+      -->
+
+      <!-- plays desired frequency -->
+      Note:<br>
+                <input name="noteField" type="text">
+                <button onClick="playFrequency()"> Play Note </button>
+                <button onclick="stopFrequency()">Stop Note</button>
+            <br>
+        <br>
+
+        <!-- handles picking file and converting to base 64 -->
+          <div>
+            <div>
+                <label for="filePicker"><h3>Choose or drag a file:</h3></label><br>
+                <input type="file" id="filePicker">
+            </div>
+            <br>
+            <div>
+                <h3>Base64 encoded version:</h3>
+                <textarea id="base64textarea" placeholder="Base64 will appear here" cols="50" rows="15"></textarea>
+            </div>
+          </div>
+
+        <script>
+          if (window.File && window.FileReader && window.FileList && window.Blob) {
+              document.getElementById('filePicker').addEventListener('change', handleFileSelect, false);
+          } else {
+              alert('The File APIs are not fully supported in this browser.');
+          }
+        </script>
+
+        <br>
+        <br>
+        <button onclick="sendFullFrequency()">Send</button>
+    </body>
 </html>
