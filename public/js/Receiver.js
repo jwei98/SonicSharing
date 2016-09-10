@@ -61,28 +61,76 @@ var main = function main(streamAnalyzer) {
 
 };
 
-var currChar;
+var currChar = '';
+var currString = '';
 var separator = false;
 var updateTransmission = function updateTransmission(hz, normalized) {
   $('#status').html("Now listening");
   $('#freq').html("Current: " + hz);
+  // End of Divider - 1850 lolHz
+  if (normalized === 1850) {
+    currChar = " ";
+  }
+
+  // End of Transmission - 1900 lolHz
+  if (normalized === 1900) {
+    this.download(currString);
+  }
+
+  // End of Character - 1950 lolHz
   if (normalized === 1950) {
-    // $('#transmission').append('|');
     separator = true;
-  } else if (separator) {
+  } else if (separator && currChar) {
+    currString += currChar;
     $('#transmission').append(currChar);
     separator = false;
   }
   else {
     currChar = b64[(normalized - 2000) / 50];
-    if (currChar) {
-
-    }
+    // console.log(currChar);
+    // if (currChar) {
+      // currString += currChar;
+      // console.log(currString);
+    // }
   }
+}
+
+var download = function(out) {
+  console.warn("Calling download()!");
+  // thank u SO <3
+  // http://stackoverflow.com/questions/3665115/
+  // create-a-file-in-memory-for-user-to-download-
+  // not-through-server
+  var parsed = out.split(' ');
+  try {
+    var fileName = atob(parsed[0]);
+  } catch(e) {
+    console.warn(e);
+    var fileName = 'download';
+  }
+  try {
+    var mimeType = atob(parsed[1]);  
+  } catch(e) {
+    console.warn(e);
+    var mimeType = 'text/plain'
+  }
+
+  var rawOutput = parsed[2];
+
+  var el = document.createElement('a');
+  el.setAttribute('href', 'data:' + mimeType 
+    + ';base64,' + rawOutput);
+  el.setAttribute('download', fileName)
+  el.style.display = 'none';
+
+  document.body.appendChild(el);
+  el.click();
+  document.body.removeChild(el);
 }
 
 module.exports = {
   init,
   main,
-  updateTransmission
+  updateTransmission,
+  download
 }

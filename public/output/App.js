@@ -1,204 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-window._ = require('lodash');
-window.context = new AudioContext();
-window.b64 = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/`;
-window.$ = require('jquery');
-
-var handleFileSelect = require('./FileHandler');
-var Receiver = require('./Receiver');
-window.FrequencyPlayer = require('./FrequencyPlayer');
-
-$(function() {
-  navigator.getUserMedia({
-    audio: {
-      mandatory: {
-        googEchoCancellation: "false",
-        googAutoGainControl: "false",
-        googNoiseSuppression: "false",
-        googHighpassFilter: "false"
-      },
-      optional: []
-    }
-  }, Receiver.init.bind(Receiver), e => console.error(e));
-
-  if (window.File && window.FileReader && window.FileList && window.Blob) {
-      document.getElementById('filePicker').addEventListener('change', handleFileSelect, false);
-  } else {
-      alert('The File APIs are not fully supported in this browser.');
-  }
-});
-
-},{"./FileHandler":2,"./FrequencyPlayer":3,"./Receiver":4,"jquery":5,"lodash":6}],2:[function(require,module,exports){
-module.exports = function(evt) {
-    var files = evt.target.files;
-    var file = files[0];
-
-    if (files && file) {
-        var reader = new FileReader();
-        reader.onload = function(readerEvt) {
-            var binaryString = readerEvt.target.result;
-            var textarea = document.getElementById("base64textarea");
-            textarea.value = "data:" + file.type + ";base64," + btoa(binaryString);
-        };
-
-        reader.readAsBinaryString(file);
-    }
-
-}
-
-},{}],3:[function(require,module,exports){
-
-var frequencyIndex = 0;
-var intervalVar;
-
-var play = function playFrequency() {
-    var testBase64String = document.getElementById('base64textarea').value;
-
-    // create an array of the needed frequencies to play
-    var frequencyArray = [];
-    for (var i = 0; i < testBase64String.length; i++) {
-        var index = b64.indexOf(testBase64String[i]);
-        var freq = (index * 50) + 2000;
-        frequencyArray.push([freq, 0.200]);
-        frequencyArray.push([1950, 0.200]); // separator tone
-    }
-
-    var previousTime = 0;
-    for (var i = 0; i < frequencyArray.length; i++) {
-      var oscillator = context.createOscillator();
-      var tone = frequencyArray[i][0];
-      var duration = frequencyArray[i][1];
-      oscillator.frequency.value = tone;
-      oscillator.connect(context.destination);
-      oscillator.start(context.currentTime + i * duration);
-      setTimeout(() => $('#sound').append('+'), i * duration * 1000);
-      // previousTime = ;
-      oscillator.stop(context.currentTime + i * duration + duration);
-
-    }
-}
-
-var stop = function stopFrequency() {
-    oscillator.stop(0);
-}
-
-listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'DarkOrange','rgb(140, 125, 51)','rgb(255, 153, 51)',
-							'Gold', 'Yellow','rgb(240, 255, 51)','rgb(204, 255, 51)', 'GreenYellow','LimeGreen', '	rgb(135, 255, 51)','	rgb(120, 255, 51)',
-							'LawnGreen','rgb(110, 255, 51)','rgb(125,255,1)','rgb(102, 255, 51)	','rgb(51, 255, 51)','Green','Green','rgb(51, 255, 51)',
-							'	rgb(51, 255, 102)','SeaGreen','SpringGreen','Aquamarine','Aquamarine','rgb(51, 255, 153)','rgb(51, 255, 225)','Cyan',
-							'DarkTurquoise','Aqua','rgb(51, 204, 255)','rgb(51, 204, 255)','CornflowerBlue','rgb(51, 153, 255)','rgb(51, 125, 255)','	rgb(51, 102, 255)',
-							'Blue','Blue','rgb(51, 51, 255)	','Indigo','rgb(70, 51, 255)	','BlueViolet','Violet','DarkOrchid',
-							'Purple','rgb(204, 51, 255)	','rgb(247,1,255)', 'HotPink','Magenta', 'Magenta','Orchid','DeepPink',
-							'Fuchsia','rgb(255,1,153)','rgb(255, 51, 125)','rgb(255, 51, 102)','rgb(255, 51, 80)','Crimson','Crimson','red']
-
-function lightUp(index) {
-
-	console.log("lighting up")
-	console.log(index);
-	var j = Math.floor(index/8);
-	var i = index % 8;
-	console.log(listColors[index])
-	document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = listColors[index];
-	setTimeout(function() {
-		document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = "White";
-	}, 145);
-}
-
-module.exports = {
-  playFrequency: play,
-  stopFrequency: stop
-}
-
-},{}],4:[function(require,module,exports){
-var listening = true;
-var ready = false;
-
-var init = function init(stream) {
-  // [1] Creates GainNode (controls volume?)
-  // [2] Creates MediaStreamAudioSourceNode
-  // [3] Creates an AnalyserNode for collecting frequency results
-  // [4] Connects our MediaStreamAudioSourceNode to our GainNode
-
-  var gain = context.createGain(); // 1
-  var baseline = context.createGain();
-  var mediaStream = context.createMediaStreamSource(stream); // 2
-  var streamAnalyzer = context.createAnalyser(); // 3
-  var biquadFilter = context.createBiquadFilter();
-
-  biquadFilter.frequency = 1800;
-  biquadFilter.type = "highshelf";
-  biquadFilter.gain.value = 10.0;
-
-  baseline.gain.value = 0.0;
-  streamAnalyzer.fftSize = 2048;
-
-  mediaStream.connect(gain); // 4
-  mediaStream.connect(biquadFilter);
-  biquadFilter.connect(streamAnalyzer);
-  gain.connect(baseline);
-  baseline.connect(context.destination);
-
-  $('#status').html("Ready");
-
-  this.main(streamAnalyzer, listening);
-};
-
-var main = function main(streamAnalyzer) {
-  var data = new Uint8Array(streamAnalyzer.frequencyBinCount);
-  streamAnalyzer.getByteFrequencyData(data);
-
-  var multiplier = context.sampleRate / streamAnalyzer.fftSize;
-
-  // lolHz - basically Hertz, but wrong!
-  var lolhz = Math.round(data.indexOf(_.max(data)) * multiplier);
-  var lolhz_normalized = 50 * Math.floor(lolhz / 50 + 0.5);
-
-  if (listening) {
-    this.updateTransmission(lolhz, lolhz_normalized);
-    // console.log(lolhz_normalized);
-  } else if (lolhz_normalized === 2800 && !ready) {
-    $('#status').html("Signal received");
-    setTimeout(() => {
-      listening = ready;
-      if(!listening) $('#status').html("Ready");
-    }, 1000);
-  }
-
-  ready = lolhz_normalized === 2800;
-  if(listening) {
-    setTimeout(() => this.main(streamAnalyzer), 0);
-  } else {
-    setTimeout(() => this.main(streamAnalyzer), 0);
-  }
-
-};
-
-var currChar;
-var separator = false;
-var updateTransmission = function updateTransmission(hz, normalized) {
-  $('#status').html("Now listening");
-  $('#freq').html("Current: " + hz);
-  if (normalized === 1950) {
-    // $('#transmission').append('|');
-    separator = true;
-  } else if (separator) {
-    $('#transmission').append(currChar);
-    separator = false;
-  }
-  else {
-    currChar = b64[(normalized - 2000) / 50];
-    if (currChar) {
-
-    }
-  }
-}
-
-module.exports = {
-  init,
-  main,
-  updateTransmission
-}
-},{}],5:[function(require,module,exports){
 /*eslint-disable no-unused-vars*/
 /*!
  * jQuery JavaScript Library v3.1.0
@@ -10274,7 +10074,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],6:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -27011,4 +26811,256 @@ return jQuery;
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[1]);
+},{}],3:[function(require,module,exports){
+window._ = require('lodash');
+window.context = new AudioContext();
+window.b64 = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=`;
+window.$ = require('jquery');
+
+var handleFileSelect = require('./FileHandler');
+var Receiver = require('./Receiver');
+window.FrequencyPlayer = require('./FrequencyPlayer');
+
+$(function() {
+  navigator.getUserMedia({
+    audio: {
+      mandatory: {
+        googEchoCancellation: "false",
+        googAutoGainControl: "false",
+        googNoiseSuppression: "false",
+        googHighpassFilter: "false"
+      },
+      optional: []
+    }
+  }, Receiver.init.bind(Receiver), e => console.error(e));
+
+  if (window.File && window.FileReader && window.FileList && window.Blob) {
+      document.getElementById('filePicker').addEventListener('change', handleFileSelect, false);
+  } else {
+      alert('The File APIs are not fully supported in this browser.');
+  }
+});
+
+},{"./FileHandler":4,"./FrequencyPlayer":5,"./Receiver":6,"jquery":1,"lodash":2}],4:[function(require,module,exports){
+module.exports = function(evt) {
+    var files = evt.target.files;
+    var file = files[0];
+
+    if (files && file) {
+        var reader = new FileReader();
+        reader.onload = function(readerEvt) {
+            var binaryString = readerEvt.target.result;
+            var textarea = document.getElementById("base64textarea");
+            textarea.value = "data:" + file.type + ";base64," + btoa(binaryString);
+        };
+
+        reader.readAsBinaryString(file);
+    }
+
+}
+
+},{}],5:[function(require,module,exports){
+
+var frequencyIndex = 0;
+var intervalVar;
+
+var play = function playFrequency() {
+    var testBase64String = document.getElementById('base64textarea').value;
+
+    // create an array of the needed frequencies to play
+    var frequencyArray = [];
+    
+    for (var i = 0; i < testBase64String.length; i++) {
+        var index = b64.indexOf(testBase64String[i]);
+        var freq = (index * 50) + 2000;
+        frequencyArray.push([freq, 0.50]);
+        frequencyArray.push([1950, 0.50]); // separator tone
+    }
+
+    console.log(frequencyArray);
+    frequencyArray.push([1900, 0.5]);
+
+    var previousTime = 0;
+    for (var i = 0; i < frequencyArray.length; i++) {
+      var oscillator = context.createOscillator();
+      var tone = frequencyArray[i][0];
+      var duration = frequencyArray[i][1];
+      oscillator.frequency.value = tone;
+      oscillator.connect(context.destination);
+      oscillator.start(context.currentTime + i * duration);
+      setTimeout(() => $('#sound').append('+'), i * duration * 1000);
+      // previousTime = ;
+      oscillator.stop(context.currentTime + i * duration + duration);
+
+    }
+}
+
+var stop = function stopFrequency() {
+    oscillator.stop(0);
+}
+
+listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'DarkOrange','rgb(140, 125, 51)','rgb(255, 153, 51)',
+							'Gold', 'Yellow','rgb(240, 255, 51)','rgb(204, 255, 51)', 'GreenYellow','LimeGreen', '	rgb(135, 255, 51)','	rgb(120, 255, 51)',
+							'LawnGreen','rgb(110, 255, 51)','rgb(125,255,1)','rgb(102, 255, 51)	','rgb(51, 255, 51)','Green','Green','rgb(51, 255, 51)',
+							'	rgb(51, 255, 102)','SeaGreen','SpringGreen','Aquamarine','Aquamarine','rgb(51, 255, 153)','rgb(51, 255, 225)','Cyan',
+							'DarkTurquoise','Aqua','rgb(51, 204, 255)','rgb(51, 204, 255)','CornflowerBlue','rgb(51, 153, 255)','rgb(51, 125, 255)','	rgb(51, 102, 255)',
+							'Blue','Blue','rgb(51, 51, 255)	','Indigo','rgb(70, 51, 255)	','BlueViolet','Violet','DarkOrchid',
+							'Purple','rgb(204, 51, 255)	','rgb(247,1,255)', 'HotPink','Magenta', 'Magenta','Orchid','DeepPink',
+							'Fuchsia','rgb(255,1,153)','rgb(255, 51, 125)','rgb(255, 51, 102)','rgb(255, 51, 80)','Crimson','Crimson','red']
+
+function lightUp(index) {
+
+	console.log("lighting up")
+	console.log(index);
+	var j = Math.floor(index/8);
+	var i = index % 8;
+	console.log(listColors[index])
+	document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = listColors[index];
+	setTimeout(function() {
+		document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = "White";
+	}, 145);
+}
+
+module.exports = {
+  playFrequency: play,
+  stopFrequency: stop
+}
+
+},{}],6:[function(require,module,exports){
+var listening = true;
+var ready = false;
+
+var init = function init(stream) {
+  // [1] Creates GainNode (controls volume?)
+  // [2] Creates MediaStreamAudioSourceNode
+  // [3] Creates an AnalyserNode for collecting frequency results
+  // [4] Connects our MediaStreamAudioSourceNode to our GainNode
+
+  var gain = context.createGain(); // 1
+  var baseline = context.createGain();
+  var mediaStream = context.createMediaStreamSource(stream); // 2
+  var streamAnalyzer = context.createAnalyser(); // 3
+  var biquadFilter = context.createBiquadFilter();
+
+  biquadFilter.frequency = 1800;
+  biquadFilter.type = "highshelf";
+  biquadFilter.gain.value = 10.0;
+
+  baseline.gain.value = 0.0;
+  streamAnalyzer.fftSize = 2048;
+
+  mediaStream.connect(gain); // 4
+  mediaStream.connect(biquadFilter);
+  biquadFilter.connect(streamAnalyzer);
+  gain.connect(baseline);
+  baseline.connect(context.destination);
+
+  $('#status').html("Ready");
+
+  this.main(streamAnalyzer, listening);
+};
+
+var main = function main(streamAnalyzer) {
+  var data = new Uint8Array(streamAnalyzer.frequencyBinCount);
+  streamAnalyzer.getByteFrequencyData(data);
+
+  var multiplier = context.sampleRate / streamAnalyzer.fftSize;
+
+  // lolHz - basically Hertz, but wrong!
+  var lolhz = Math.round(data.indexOf(_.max(data)) * multiplier);
+  var lolhz_normalized = 50 * Math.floor(lolhz / 50 + 0.5);
+
+  if (listening) {
+    this.updateTransmission(lolhz, lolhz_normalized);
+    // console.log(lolhz_normalized);
+  } else if (lolhz_normalized === 2800 && !ready) {
+    $('#status').html("Signal received");
+    setTimeout(() => {
+      listening = ready;
+      if(!listening) $('#status').html("Ready");
+    }, 1000);
+  }
+
+  ready = lolhz_normalized === 2800;
+  if(listening) {
+    setTimeout(() => this.main(streamAnalyzer), 0);
+  } else {
+    setTimeout(() => this.main(streamAnalyzer), 0);
+  }
+
+};
+
+var currChar = '';
+var currString = '';
+var separator = false;
+var updateTransmission = function updateTransmission(hz, normalized) {
+  $('#status').html("Now listening");
+  $('#freq').html("Current: " + hz);
+  // End of Divider - 1850 lolHz
+  if (normalized === 1850) {
+    currChar = " ";
+  }
+
+  // End of Transmission - 1900 lolHz
+  if (normalized === 1900) {
+    this.download(currString);
+  }
+
+  // End of Character - 1950 lolHz
+  if (normalized === 1950) {
+    separator = true;
+  } else if (separator && currChar) {
+    currString += currChar;
+    $('#transmission').append(currChar);
+    separator = false;
+  }
+  else {
+    currChar = b64[(normalized - 2000) / 50];
+    // console.log(currChar);
+    // if (currChar) {
+      // currString += currChar;
+      // console.log(currString);
+    // }
+  }
+}
+
+var download = function(out) {
+  console.warn("Calling download()!");
+  // thank u SO <3
+  // http://stackoverflow.com/questions/3665115/
+  // create-a-file-in-memory-for-user-to-download-
+  // not-through-server
+  var parsed = out.split(' ');
+  try {
+    var fileName = atob(parsed[0]);
+  } catch(e) {
+    console.warn(e);
+    var fileName = 'download';
+  }
+  try {
+    var mimeType = atob(parsed[1]);  
+  } catch(e) {
+    console.warn(e);
+    var mimeType = 'text/plain'
+  }
+
+  var rawOutput = parsed[2];
+
+  var el = document.createElement('a');
+  el.setAttribute('href', 'data:' + mimeType 
+    + ';base64,' + rawOutput);
+  el.setAttribute('download', fileName)
+  el.style.display = 'none';
+
+  document.body.appendChild(el);
+  el.click();
+  document.body.removeChild(el);
+}
+
+module.exports = {
+  init,
+  main,
+  updateTransmission,
+  download
+}
+},{}]},{},[3]);
