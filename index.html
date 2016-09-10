@@ -2,7 +2,7 @@
   <!-- import javascript scripts & CSS -->
   <script src="FrequencyPlayer.js" type="text/javascript"></script>
   <script src="FileHandler.js" type="text/javascript"></script>
-  <link rel="stylesheet" type="text/css" href="SonicSharingCSS.css">
+  <!-- link rel="stylesheet" type="text/css" href="SonicSharingCSS.css" -->
 
   <h1> Sonic Sharing </h1>
 
@@ -14,12 +14,10 @@
   -->
 
   <!-- plays desired frequency -->
-  <form name="noteField" action="playFrequency()">
   Note:<br>
-  <input type="text" name="note">
-  <input type="submit" value="Submit">
-</form>
-
+  <input name="noteField" type="text">
+  <button onClick="playFrequency()"> Play Note </button>
+  <button onclick="stopFrequency()">Stop Note</button>
 <br>
 <br>
 
