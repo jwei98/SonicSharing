@@ -1,13 +1,10 @@
 
-var frequencyIndex = 0;
-var intervalVar;
-
 var play = function playFrequency() {
     var testBase64String = document.getElementById('base64textarea').value;
 
     // create an array of the needed frequencies to play
     var frequencyArray = [];
-    
+
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
         var freq = (index * 50) + 2000;
@@ -31,10 +28,6 @@ var play = function playFrequency() {
       oscillator.stop(context.currentTime + i * duration + duration);
 
     }
-}
-
-var stop = function stopFrequency() {
-    oscillator.stop(0);
 }
 
 listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'DarkOrange','rgb(140, 125, 51)','rgb(255, 153, 51)',
@@ -61,5 +54,4 @@ function lightUp(index) {
 
 module.exports = {
   playFrequency: play,
-  stopFrequency: stop
 }
