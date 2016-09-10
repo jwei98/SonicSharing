@@ -4,10 +4,10 @@ var handleFileSelect = function(evt) {
 
     if (files && file) {
         var reader = new FileReader();
-        console.log("a");
         reader.onload = function(readerEvt) {
             var binaryString = readerEvt.target.result;
-            document.getElementById("base64textarea").value = btoa(binaryString);
+            var textarea = document.getElementById("base64textarea");
+            textarea.value = "data:" + file.type + ";base64," + btoa(binaryString);
         };
 
         reader.readAsBinaryString(file);

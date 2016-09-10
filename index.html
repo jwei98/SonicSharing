@@ -27,7 +27,6 @@
 
 <script>
   if (window.File && window.FileReader && window.FileList && window.Blob) {
-      console.log("b");
       document.getElementById('filePicker').addEventListener('change', handleFileSelect, false);
   } else {
       alert('The File APIs are not fully supported in this browser.');
