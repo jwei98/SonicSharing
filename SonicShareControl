@@ -1,11 +1,11 @@
 <html>
-
-  // import javascript script
+  <!-- import javascript script & CSS -->
   <script src="FrequencyPlayer.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="SonicSharingCSS.css">
 
   <h1> Sonic Sharing </h1>
 
-  // division that contains both buttons
+  <!-- division that contains both buttons -->
   <div class= "buttons">
     <button onclick="playFrequency()">Play Frequency</button>
     <button onclick="stopFrequency()">Stop Frequency</button>
