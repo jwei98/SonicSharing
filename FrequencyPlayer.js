@@ -1,6 +1,8 @@
 context = new AudioContext();
 
 var base64String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var frequencyIndex = 0;
+var intervalVar;
 
 function playFrequency() {
     var testBase64String = document.getElementsByName('noteField')[0].value;
@@ -38,25 +40,28 @@ function sendFullFrequency() {
 
   console.log(frequencyArray);
 
-  for (var j = 0; j < frequencyArray.length; j++) {
-    oscillator = context.createOscillator();
-    oscillator.connect(context.destination);
-    oscillator.frequency.value = frequencyArray[j];
-    oscillator.start();
-    // delay for two seconds
-    waitForDuration(100);
-    oscillator.stop()
-    waitForDuration(25);
-  }
+  // Play a sound every 150 milliseconds
+  frequencyIndex = 0;
+  intervalVar = setInterval(function() {
+      playOneSound(frequencyArray)
+  }, 150);
+
 }
 
-function waitForDuration(milliseconds) {
-  var start = new Date().getTime();
-  while (true) {
-    var end = new Date().getTime();
-    var time = end - start;
-    if (time >= milliseconds) {
-      break;
+function playOneSound(freq) {
+    if (frequencyIndex >= freq.length) {
+        clearInterval(intervalVar)
+        oscillator.stop();
+        return;
     }
-  }
+
+    oscillator = context.createOscillator();
+    oscillator.connect(context.destination);
+    oscillator.frequency.value = freq[frequencyIndex];
+    oscillator.start();
+
+    setTimeout(function() {
+         oscillator.stop()
+         frequencyIndex++;
+     }, 100);
 }
