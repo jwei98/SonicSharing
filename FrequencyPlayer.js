@@ -1,7 +1,13 @@
-var playFrequency = function() {
+function playFrequency() {
+    context = new AudioContext;
+    oscillator = context.createOscillator();
+    oscillator.frequency.value = 200;
 
+    oscillator.connect(context.destination);
+
+    oscillator.start(0);
 }
 
-var stopFrequency = function() {
-
+function stopFrequency() {
+    oscillator.stop(0);
 }
