@@ -7,7 +7,7 @@ var handleFileSelect = require('./FileHandler');
 var Receiver = require('./Receiver');
 window.FrequencyPlayer = require('./FrequencyPlayer');
 
-$(function() { 
+$(function() {
   navigator.getUserMedia({
     audio: {
       mandatory: {
