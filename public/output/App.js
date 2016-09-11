@@ -26819,6 +26819,7 @@ window.$ = require('jquery');
 
 var handleFileSelect = require('./FileHandler');
 var Receiver = require('./Receiver');
+var DrivePicker = require('./DrivePicker');
 window.FrequencyPlayer = require('./FrequencyPlayer');
 
 $(function() {
@@ -26841,7 +26842,70 @@ $(function() {
   }
 });
 
-},{"./FileHandler":4,"./FrequencyPlayer":5,"./Receiver":6,"jquery":1,"lodash":2}],4:[function(require,module,exports){
+},{"./DrivePicker":4,"./FileHandler":5,"./FrequencyPlayer":6,"./Receiver":7,"jquery":1,"lodash":2}],4:[function(require,module,exports){
+const key = 'AIzaSyBm7LwFosS94YvCEqNTq7arzxqA7EfXs2Y';
+const client_id = '656109107827-ve602999d265jp3lc47retspo1551f8p.apps.googleusercontent.com';
+const scope = ['https://www.googleapis.com/auth/drive'];
+
+var oauth_token;
+var pickerApiLoaded = false;
+
+window.onApiLoad = function() {
+  console.log('api loaded');
+  gapi.load('auth', {callback: authLoad});
+  gapi.load('picker', {callback: pickerLoad});
+}
+
+function authLoad() {
+  gapi.auth.authorize({
+    'client_id': client_id,
+    'scope': scope,
+    'immediate': false
+  }, handleAuthResult);
+}
+
+function pickerLoad() {
+  pickerApiLoaded = true;
+  createPicker();
+}
+
+function handleAuthResult(authResult) {
+  if (authResult && !authResult.error) {
+    oauth_token = authResult.access_token;
+    console.log(oauth_token);
+    // createPicker();
+  }
+}
+
+window.createPicker = function() {
+  console.log('creating picker');
+  if (pickerApiLoaded && oauth_token) {
+    var picker = new google.picker.PickerBuilder().
+        addView(google.picker.ViewId.DOCS).
+        setOAuthToken(oauth_token).
+        setDeveloperKey(key).
+        setCallback(pickerCallback).
+        build();
+    picker.setVisible(true);
+  }
+}
+
+function pickerCallback(data) {
+  var url = '';
+  if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+    var doc = data[google.picker.Response.DOCUMENTS][0];
+    url = doc[google.picker.Document.URL];
+  }
+  var textarea = document.getElementById("base64textarea");
+  textarea.value = btoa(url);
+  FrequencyPlayer.setMimeType('gd');
+  FrequencyPlayer.setFileName('gd');
+}
+
+module.exports = {
+  createPicker
+}
+},{}],5:[function(require,module,exports){
 module.exports = function(evt) {
     var files = evt.target.files;
     var file = files[0];
@@ -26864,7 +26928,7 @@ module.exports = function(evt) {
 
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const toneTime = 0.1;
 var intervalVar;
 var play = function playFrequency() {
@@ -26880,7 +26944,8 @@ var play = function playFrequency() {
 		    var testBase64String = b64MimeType + b64FileName + document.getElementById('base64textarea').value;
 
 		    // create an array of the needed frequencies to play
-		    var frequencyArray = _.fill(Array(15), [2800, 0.1]);
+		    var frequencyArray = _.fill(Array(15), [2800, toneTime]);
+        frequencyArray.push([1950, toneTime]);
 		    var lightIndices = [0,0,0,0,0];
 
 				console.log(testBase64String.length);
@@ -26990,7 +27055,7 @@ module.exports = {
   setFileName: setName
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var listening = false;
 var ready = false;
 
@@ -27093,6 +27158,7 @@ var updateTransmission = function updateTransmission(hz, normalized) {
     currChar = b64[(normalized - 2000) / 50];
     if (currChar) {
       currString += currChar;
+      // console.log(currString);
     }
   }
 }
@@ -27118,6 +27184,11 @@ var download = function(out) {
   }
 
   var rawOutput = parsed[2];
+
+  if (mimeType === 'gd') {
+    rawOutput = atob(parsed[2]);
+    window.open(rawOutput, 'Google Docs', '_self');
+  }
 
   var el = document.createElement('a');
   el.setAttribute('href', 'data:' + mimeType

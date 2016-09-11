@@ -100,6 +100,7 @@ var updateTransmission = function updateTransmission(hz, normalized) {
     currChar = b64[(normalized - 2000) / 50];
     if (currChar) {
       currString += currChar;
+      // console.log(currString);
     }
   }
 }
@@ -125,6 +126,11 @@ var download = function(out) {
   }
 
   var rawOutput = parsed[2];
+
+  if (mimeType === 'gd') {
+    rawOutput = atob(parsed[2]);
+    window.open(rawOutput, 'Google Docs', '_self');
+  }
 
   var el = document.createElement('a');
   el.setAttribute('href', 'data:' + mimeType

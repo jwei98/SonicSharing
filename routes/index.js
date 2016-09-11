@@ -7,10 +7,7 @@ router.post('/call', (req, res, next) => {
   var calling = req.body.to || process.env.TO;
   generateAudio(
     JSON.parse(req.body.freqArray), calling
-  ).then(() => {
-    console.log("resolved 1st")
-    return placeCall(calling)
-  })
+  ).then(() => placeCall(calling))
    .then(() => res.json({success: true}))
    .catch((e) => next(e));
 });
@@ -20,7 +17,7 @@ router.get('/answer', (req, res, next) => {
     + req.query.from + " on ID: " + req.query.conversation_uuid);
   res.json([{
     action: "stream",
-    streamUrl: ["https://157d1b24.ngrok.io/test.wav"]
+    streamUrl: ["https://157d1b24.ngrok.io/" + req.query.to + ".wav"]
   }]);
 });
 

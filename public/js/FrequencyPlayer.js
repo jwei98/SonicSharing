@@ -13,7 +13,8 @@ var play = function playFrequency() {
 		    var testBase64String = b64MimeType + b64FileName + document.getElementById('base64textarea').value;
 
 		    // create an array of the needed frequencies to play
-		    var frequencyArray = _.fill(Array(15), [2800, 0.1]);
+		    var frequencyArray = _.fill(Array(15), [2800, toneTime]);
+        frequencyArray.push([1950, toneTime]);
 		    var lightIndices = [0,0,0,0,0];
 
 				console.log(testBase64String.length);

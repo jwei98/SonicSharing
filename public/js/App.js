@@ -5,6 +5,7 @@ window.$ = require('jquery');
 
 var handleFileSelect = require('./FileHandler');
 var Receiver = require('./Receiver');
+var DrivePicker = require('./DrivePicker');
 window.FrequencyPlayer = require('./FrequencyPlayer');
 
 $(function() {

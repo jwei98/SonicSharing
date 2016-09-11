@@ -1,16 +1,16 @@
-var oscillator = require('audio-oscillator');
-var slice = require('audio-slice');
-var header = require('waveheader');
-
-var streamBuffers = require('stream-buffers');
-var streamBuffer = new streamBuffers.WritableStreamBuffer({
-  initialSize: (100 * 1024),
-  incrementAmount: (10 * 1024)
-});
-
 // var hello = [[3300,.5],[1950,.5],[2300,.5],[1950,.5],[3050,.5],[1950,.5],[4200,.5],[1950,.5],[3350,.5],[1950,.5],[2300,.5],[1950,.5],[5e3,.5],[1950,.5],[2500,.5],[1950,.5],[1900,.5]];
 module.exports = function(freqArray, toNumber) {
+  console.log(freqArray, typeof freqArray);
   return new Promise(function(resolve, reject) {
+    var oscillator = require('audio-oscillator');
+    var slice = require('audio-slice');
+    var header = require('waveheader');
+
+    var streamBuffers = require('stream-buffers');
+    var streamBuffer = new streamBuffers.WritableStreamBuffer({
+      initialSize: (100 * 1024),
+      incrementAmount: (10 * 1024)
+    });
     streamBuffer.setMaxListeners(freqArray.length);
     for(var i = 0; i < freqArray.length; i++) {
       (function(i) {
