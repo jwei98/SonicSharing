@@ -26866,14 +26866,27 @@ var play = function playFrequency() {
 
     // create an array of the needed frequencies to play
     var frequencyArray = [];
-
+		var lightIndices = [];
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
+				lightIndices.push(index);
         var freq = (index * 50) + 2000;
         frequencyArray.push([freq, 0.50]);
         frequencyArray.push([1950, 0.50]); // separator tone
     }
 
+		for (var i = 0; i < lightIndices.length; i++) {
+			if (lightIndices[i] == -1) {
+					lightIndices[i] = 0;
+			}
+		}
+
+		// Light square every 150 milliseconds
+		 count = 0;
+		 intervalVar = setInterval(() => {
+		     this.lightUp(lightIndices)
+		 }, 1000);
+		 console.log(lightIndices);
     console.log(frequencyArray);
     frequencyArray.push([1900, 0.5]);
 
@@ -26892,6 +26905,7 @@ var play = function playFrequency() {
     }
 }
 
+
 listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'DarkOrange','rgb(140, 125, 51)','rgb(255, 153, 51)',
 							'Gold', 'Yellow','rgb(240, 255, 51)','rgb(204, 255, 51)', 'GreenYellow','LimeGreen', '	rgb(135, 255, 51)','	rgb(120, 255, 51)',
 							'LawnGreen','rgb(110, 255, 51)','rgb(125,255,1)','rgb(102, 255, 51)	','rgb(51, 255, 51)','Green','Green','rgb(51, 255, 51)',
@@ -26901,21 +26915,28 @@ listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'D
 							'Purple','rgb(204, 51, 255)	','rgb(247,1,255)', 'HotPink','Magenta', 'Magenta','Orchid','DeepPink',
 							'Fuchsia','rgb(255,1,153)','rgb(255, 51, 125)','rgb(255, 51, 102)','rgb(255, 51, 80)','Crimson','Crimson','red']
 
-function lightUp(index) {
+console.log(i);
 
-	console.log("lighting up")
-	console.log(index);
-	var j = Math.floor(index/8);
-	var i = index % 8;
-	console.log(listColors[index])
-	document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = listColors[index];
-	setTimeout(function() {
-		document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = "White";
-	}, 145);
+var light = function lightUp(indices) {
+   if (count >= indices.length) {
+       clearInterval(intervalVar)
+       return;
+   }
+   var index = indices[count];
+	 var j = Math.floor(index/8);
+	 var i = index % 8;
+   document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = listColors[index];
+
+   setTimeout(function() {
+        document.getElementById('table').rows[j+1].cells[i].style.backgroundColor = "White";
+        count++;
+    }, 500);
 }
+
 
 module.exports = {
   playFrequency: play,
+	lightUp: light
 }
 
 },{}],6:[function(require,module,exports){
