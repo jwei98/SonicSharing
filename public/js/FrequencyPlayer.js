@@ -1,4 +1,5 @@
 const toneTime = 0.1;
+var intervalVar;
 var play = function playFrequency() {
 
     var testBase64String = document.getElementById('base64textarea').value;
@@ -12,7 +13,7 @@ var play = function playFrequency() {
 		    var testBase64String = b64MimeType + b64FileName + document.getElementById('base64textarea').value;
 
 		    // create an array of the needed frequencies to play
-		    var frequencyArray = _.fill(Array(10), [2800, 0.1]);
+		    var frequencyArray = _.fill(Array(15), [2800, 0.1]);
 		    var lightIndices = [0,0,0,0,0];
 
 				console.log(testBase64String.length);
@@ -42,7 +43,7 @@ var play = function playFrequency() {
 
 				// Light square every 200 milliseconds
 				count = 0;
-				setInterval(() => {
+				intervalVar = setInterval(() => {
 			        this.lightUp(lightIndices)
 				}, 200);
 			    frequencyArray.push([1900, toneTime]);
@@ -85,7 +86,7 @@ for (var i = 0; i < 16; i++) {
 
 var light = function lightUp(indices) {
    if (count >= indices.length) {
-		 	console.log("we're out")
+		 	// console.log("we're out")
        clearInterval(intervalVar)
 			 // light em all up
 			 for (var i = 0; i < 64; i++) {
@@ -95,9 +96,9 @@ var light = function lightUp(indices) {
 				return;
  		}
 		else {
-		 console.log("lighting up square");
+		 // console.log("lighting up square");
 	   var index = indices[count];
-		 console.log(count,index);
+		 // console.log(count,index);
 		 document.getElementById('table').rows[0].cells[index].style.backgroundColor = listColors[index];
 
 	   setTimeout(function() {

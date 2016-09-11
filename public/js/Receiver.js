@@ -1,4 +1,4 @@
-var listening = true;
+var listening = false;
 var ready = false;
 
 var init = function init(stream) {
@@ -64,35 +64,43 @@ var main = function main(streamAnalyzer) {
 var currChar = '';
 var currString = '';
 var separator = false;
+var downloading = false;
 var updateTransmission = function updateTransmission(hz, normalized) {
-  $('#status').html("Now listening for signal...");
-  $('#freq').html("Current Frequency: " + hz + " Hz");
+  $('#status').html("Now listening");
+  $('#freq').html("Current: " + hz);
   // End of Divider - 1850 lolHz
   if (normalized === 1850) {
-    currChar = " ";
+    currString += " ";
   }
 
   // End of Transmission - 1900 lolHz
-  if (normalized === 1900) {
-    this.download(currString);
+  if (normalized === 1900 && !downloading) {
+    var received = currString.split(/\|+/);
+    var parsed = received.map(
+      (c, i) => c[Math.floor(c.length / 2)]
+    ).join('');
+    console.log(parsed);
+    this.download(parsed.substring(1));
+    downloading = true;
   }
 
   // End of Character - 1950 lolHz
   if (normalized === 1950) {
     separator = true;
-  } else if (separator && currChar) {
-    currString += currChar;
-    $('#transmission').append(currChar);
-
-    separator = false;
+    currString += '|';
+    // $('#transmission').append('|');
   }
+  // } else if (separator && currChar) {
+  //   currString += currChar;
+  //   $('#transmission').append(currChar);
+  //   currChar = '';
+  //   separator = false;
+  // }
   else {
     currChar = b64[(normalized - 2000) / 50];
-    // console.log(currChar);
-    // if (currChar) {
-      // currString += currChar;
-      // console.log(currString);
-    // }
+    if (currChar) {
+      currString += currChar;
+    }
   }
 }
 
@@ -104,13 +112,13 @@ var download = function(out) {
   // not-through-server
   var parsed = out.split(' ');
   try {
-    var fileName = atob(parsed[0]);
+    var fileName = atob(parsed[1]);
   } catch(e) {
     console.warn(e);
     var fileName = 'download';
   }
   try {
-    var mimeType = atob(parsed[1]);
+    var mimeType = atob(parsed[0]);
   } catch(e) {
     console.warn(e);
     var mimeType = 'text/plain'
