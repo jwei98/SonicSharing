@@ -9,7 +9,7 @@ module.exports = function(evt) {
             var textarea = document.getElementById("base64textarea");
             var mimeType = file.type;
             var fileName = file.name;
-            
+
             textarea.value = btoa(binaryString);
             FrequencyPlayer.setMimeType(mimeType);
             FrequencyPlayer.setFileName(fileName);

@@ -83,6 +83,7 @@ var updateTransmission = function updateTransmission(hz, normalized) {
   } else if (separator && currChar) {
     currString += currChar;
     $('#transmission').append(currChar);
+
     separator = false;
   }
   else {
