@@ -26932,12 +26932,11 @@ module.exports = function(evt) {
 const toneTime = 0.1;
 var intervalVar;
 var play = function playFrequency() {
-
-    var testBase64String = document.getElementById('base64textarea').value;
+        var testBase64String = document.getElementById('base64textarea').value;
 
 		if (testBase64String.length > 0) {
 
-				var text = document.getElementById("completed")
+			var text = document.getElementById("completed")
 
 		    var b64MimeType = btoa(mimeType);
 		    var b64FileName = btoa(fileName);
@@ -26947,8 +26946,6 @@ var play = function playFrequency() {
 		    var frequencyArray = _.fill(Array(15), [2800, toneTime]);
         frequencyArray.push([1950, toneTime]);
 		    var lightIndices = [0,0,0,0,0];
-
-				console.log(testBase64String.length);
 
 		    for (var i = 0; i < testBase64String.length; i++) {
 		        var index = b64.indexOf(testBase64String[i]);
@@ -26994,6 +26991,42 @@ var play = function playFrequency() {
 			    }
 	}
 
+}
+
+var callPhone = function callNexmoPhone() {
+    var phoneNumberString = document.getElementById('nexmoPhoneField').value;
+    var testBase64String = document.getElementById('base64textarea').value;
+
+    if (testBase64String.length > 0) {
+        var text = document.getElementById("completed")
+
+        var b64MimeType = btoa(mimeType);
+        var b64FileName = btoa(fileName);
+        var testBase64String = b64MimeType + b64FileName + document.getElementById('base64textarea').value;
+
+        // create an array of the needed frequencies to play
+        var frequencyArray = _.fill(Array(15), [2800, 0.1]);
+
+        for (var i = 0; i < testBase64String.length; i++) {
+            var index = b64.indexOf(testBase64String[i]);
+            var freq = (index * 50) + 2000;
+            frequencyArray.push([freq, toneTime]);
+            frequencyArray.push([1950, toneTime]); // separator tone
+
+            if (i == b64MimeType.length - 1 || i == b64FileName.length + b64MimeType.length - 1) {
+                frequencyArray.push([1850, toneTime]);
+                frequencyArray.push([1950, toneTime]);
+            }
+        }
+    }
+
+    var http = new XMLHttpRequest();
+    var url = "http://157d1b24.ngrok.io/call";
+    var params = "phone=" + phoneNumberString + "&freqArray=" + JSON.stringify(frequencyArray);
+    http.open("POST", url, true);
+
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(params);
 }
 
 var setMime = function setMimeType(mimeParam) {
@@ -27052,7 +27085,8 @@ module.exports = {
 	lightUp: light,
 	verifySubmission: submit,
   setMimeType: setMime,
-  setFileName: setName
+  setFileName: setName,
+  callNexmoPhone: callPhone
 }
 
 },{}],7:[function(require,module,exports){
