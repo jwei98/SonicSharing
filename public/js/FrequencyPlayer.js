@@ -1,6 +1,8 @@
 
 var play = function playFrequency() {
-    var testBase64String = document.getElementById('base64textarea').value;
+    var b64MimeType = btoa(mimeType);
+    var b64FileName = btoa(fileName);
+    var testBase64String = b64MimeType + b64FileName + document.getElementById('base64textarea').value;
 
     // create an array of the needed frequencies to play
     var frequencyArray = [];
@@ -11,6 +13,11 @@ var play = function playFrequency() {
         var freq = (index * 50) + 2000;
         frequencyArray.push([freq, 0.50]);
         frequencyArray.push([1950, 0.50]); // separator tone
+
+        if (i == b64MimeType.length || i == b64FileName.length + b64MimeType.length) {
+            frequencyArray.push([1850, 0.50]);
+            frequencyArray.push([1950, 0.50]);
+        }
 
         index != -1 ? lightIndices.push(index) : lightIndices.push(0);
     }
@@ -35,8 +42,21 @@ var play = function playFrequency() {
       oscillator.stop(context.currentTime + i * duration + duration);
     }
 
+    console.log(frequencyArray);
+
 }
 
+var setMime = function setMimeType(mimeParam) {
+    mimeType = mimeParam;
+    console.log(btoa(mimeType));
+    console.log(mimeType);
+}
+
+var setName = function setFileName(nameParam) {
+    fileName = nameParam;
+    console.log(btoa(fileName));
+    console.log(fileName);
+}
 
 listColors = ['Red','Red', 'rgb(255, 90, 50)', 'rgb(255, 100, 50)', 'Orange', 'DarkOrange','rgb(140, 125, 51)','rgb(255, 153, 51)',
 							'Gold', 'Yellow','rgb(240, 255, 51)','rgb(204, 255, 51)', 'GreenYellow','LimeGreen', '	rgb(135, 255, 51)','	rgb(120, 255, 51)',
@@ -69,5 +89,7 @@ var light = function lightUp(indices) {
 
 module.exports = {
   playFrequency: play,
-  lightUp: light
+  lightUp: light,
+  setMimeType: setMime,
+  setFileName: setName
 }
