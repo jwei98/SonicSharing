@@ -80,18 +80,15 @@ var updateTransmission = function updateTransmission(hz, normalized) {
   // End of Character - 1950 lolHz
   if (normalized === 1950) {
     separator = true;
+    $('#transmission').append('|');
   } else if (separator && currChar) {
     currString += currChar;
     $('#transmission').append(currChar);
+    currChar = '';
     separator = false;
   }
   else {
-    currChar = b64[(normalized - 2000) / 50];
-    // console.log(currChar);
-    // if (currChar) {
-      // currString += currChar;
-      // console.log(currString);
-    // }
+    currChar = currChar ? currChar : b64[(normalized - 2000) / 50];
   }
 }
 

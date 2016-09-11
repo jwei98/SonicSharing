@@ -26878,12 +26878,12 @@ var play = function playFrequency() {
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
         var freq = (index * 50) + 2000;
-        frequencyArray.push([freq, 0.50]);
-        frequencyArray.push([1950, 0.50]); // separator tone
+        frequencyArray.push([freq, 0.25]);
+        frequencyArray.push([1950, 0.25]); // separator tone
 
         if (i == b64MimeType.length || i == b64FileName.length + b64MimeType.length) {
-            frequencyArray.push([1850, 0.50]);
-            frequencyArray.push([1950, 0.50]);
+            frequencyArray.push([1850, 0.25]);
+            frequencyArray.push([1950, 0.25]);
         }
 
         index != -1 ? lightIndices.push(index) : lightIndices.push(0);
@@ -26894,7 +26894,7 @@ var play = function playFrequency() {
 	intervalVar = setInterval(() => {
         this.lightUp(lightIndices)
 	}, 1000);
-    frequencyArray.push([1900, 0.5]);
+    frequencyArray.push([1900, 0.25]);
 
     var previousTime = 0;
     for (var i = 0; i < frequencyArray.length; i++) {
@@ -27044,18 +27044,15 @@ var updateTransmission = function updateTransmission(hz, normalized) {
   // End of Character - 1950 lolHz
   if (normalized === 1950) {
     separator = true;
+    $('#transmission').append('|');
   } else if (separator && currChar) {
     currString += currChar;
     $('#transmission').append(currChar);
+    currChar = '';
     separator = false;
   }
   else {
-    currChar = b64[(normalized - 2000) / 50];
-    // console.log(currChar);
-    // if (currChar) {
-      // currString += currChar;
-      // console.log(currString);
-    // }
+    currChar = currChar ? currChar : b64[(normalized - 2000) / 50];
   }
 }
 
