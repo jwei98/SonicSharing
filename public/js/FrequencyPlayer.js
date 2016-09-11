@@ -1,4 +1,4 @@
-
+const toneTime = 0.1;
 var play = function playFrequency() {
     var b64MimeType = btoa(mimeType);
     var b64FileName = btoa(fileName);
@@ -6,17 +6,31 @@ var play = function playFrequency() {
 
     // create an array of the needed frequencies to play
     var frequencyArray = [];
-	var lightIndices = [];
+	   var lightIndices = [];
+
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([2800, 0.1]);
+    frequencyArray.push([1950, 0.1]);
 
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
         var freq = (index * 50) + 2000;
-        frequencyArray.push([freq, 0.25]);
-        frequencyArray.push([1950, 0.25]); // separator tone
+        frequencyArray.push([freq, toneTime]);
+        frequencyArray.push([1950, toneTime]); // separator tone
 
-        if (i == b64MimeType.length || i == b64FileName.length + b64MimeType.length) {
-            frequencyArray.push([1850, 0.25]);
-            frequencyArray.push([1950, 0.25]);
+        if (i == b64MimeType.length - 1 || i == b64FileName.length + b64MimeType.length - 1) {
+            frequencyArray.push([1850, toneTime]);
+            frequencyArray.push([1950, toneTime]);
         }
 
         index != -1 ? lightIndices.push(index) : lightIndices.push(0);
@@ -27,7 +41,7 @@ var play = function playFrequency() {
 	intervalVar = setInterval(() => {
         this.lightUp(lightIndices)
 	}, 1000);
-    frequencyArray.push([1900, 0.25]);
+    frequencyArray.push([1900, toneTime]);
 
     var previousTime = 0;
     for (var i = 0; i < frequencyArray.length; i++) {
@@ -47,13 +61,13 @@ var play = function playFrequency() {
 }
 
 var setMime = function setMimeType(mimeParam) {
-    mimeType = mimeParam;
+    mimeType = mimeParam || 'text/plain';
     console.log(btoa(mimeType));
     console.log(mimeType);
 }
 
 var setName = function setFileName(nameParam) {
-    fileName = nameParam;
+    fileName = nameParam || 'download';
     console.log(btoa(fileName));
     console.log(fileName);
 }
