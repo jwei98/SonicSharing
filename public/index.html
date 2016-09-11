@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
 	  <link rel="stylesheet" type="text/css" href="SonicSharingCSS.css">
     <script src="/build/App.js" type="text/javascript"></script>
     <style type="text/css">
@@ -13,55 +16,58 @@
       }
     </style>
   </head>
-  <body>
-      <h1> Sonic Sharing </h1>
-      <h2 id="freq"></h2>
-      <p id="status"></p>
+
+  <body backgroundColor = "grey">
+      <h1>v / f</h1>
+			<h3 class="subtitle">reinventing data sharing.</h3>
+			<hr>
+			<br>
+
+			<h1 align = "center"> <font color="blue">Audio </font>&#8680 <font color="skyblue">File</font></h1>
+			<h3 margin-top=0>File conversion and download will begin automatically</h3>
+      <h4 id="status"></h4>
+			<!-- <h4 id="freq"></h4> -->
+
       <pre id="transmission"></pre>
-      <pre id="sound"></pre>
 
-      <!-- division that contains both buttons
-      <div class= "buttons">
-        <button onclick="playFrequency()">Play Frequency</button>
-        <button onclick="stopFrequency()">Stop Frequency</button>
-      </div>
-      -->    
+      <!--  <pre id="sound"></pre>
+      handles picking file and converting to base 64 -->
 
-        <!-- handles picking file and converting to base 64 -->
-          <div>
-            <div>
-                <label for="filePicker"><h3>Choose or drag a file:</h3></label><br>
-                <input type="file" id="filePicker">
-            </div>
-            <br>
-            <div>
-                <h3>Base64 encoded version:</h3>
-                <textarea id="base64textarea" placeholder="Base64 will appear here" cols="50" rows="15"></textarea>
-            </div>
-          </div>
+			<br>
+			<br>
+			<!-- CREATE TABLE -->
+			<script>
+					var mytable = "<table id=\"table\" align = \"center\" cellpadding=\"8\" cellspacing=\"0\"><tbody>";
 
-        <br>
-        <br>
-        <button onclick="FrequencyPlayer.playFrequency()">Send</button>
+					for (var i = 0; i < 64; i++) {
+						var number = i+1;
+						mytable += "<td> </td>";
+					}
+					mytable += "</tbody></table>";
+					document.write(mytable);
+			</script>
+			<br>
+
+					<h1 align = "center"> <font color="skyblue">File</font> &#8680 <font color="blue">Audio</font></h1>
+	        <h3 for="filePicker">Choose or drag a file to convert  </h3>
+					<div> <input type="file" id="filePicker"> </div>
+
+
+		      <br>
+
+		      <h4>Base64 encoded version:</h4>
+		      <textarea id="base64textarea" cols="100" rows="10"></textarea>
+
+				<br>
+				<br>
+
+        <button onclick= "FrequencyPlayer.playFrequency()">Convert</button>
+
+				<h4 id="completed"></h4>
     </body>
 
 		<br>
 		<br>
-		<!-- CREATE TABLE -->
-    <script>
-		var mytable = "<table id=\"table\" cellpadding=\"25\" cellspacing=\"0\"><tbody><tr>";
-
-		for (var i = 0; i < 64; i++) {
-		  if (i % 8 == 0) {
-		    mytable += "</tr><tr>";
-		  }
-		  mytable += "<td>[" + i + "]</td>";
-		}
-
-		mytable += "</tr></tbody></table>";
-
-		document.write(mytable);
-		</script>
 
 		<br>
 		<br>

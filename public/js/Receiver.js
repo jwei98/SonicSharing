@@ -65,8 +65,8 @@ var currChar = '';
 var currString = '';
 var separator = false;
 var updateTransmission = function updateTransmission(hz, normalized) {
-  $('#status').html("Now listening");
-  $('#freq').html("Current: " + hz);
+  $('#status').html("Now listening for signal...");
+  $('#freq').html("Current Frequency: " + hz + " Hz");
   // End of Divider - 1850 lolHz
   if (normalized === 1850) {
     currChar = " ";
@@ -109,7 +109,7 @@ var download = function(out) {
     var fileName = 'download';
   }
   try {
-    var mimeType = atob(parsed[1]);  
+    var mimeType = atob(parsed[1]);
   } catch(e) {
     console.warn(e);
     var mimeType = 'text/plain'
@@ -118,7 +118,7 @@ var download = function(out) {
   var rawOutput = parsed[2];
 
   var el = document.createElement('a');
-  el.setAttribute('href', 'data:' + mimeType 
+  el.setAttribute('href', 'data:' + mimeType
     + ';base64,' + rawOutput);
   el.setAttribute('download', fileName)
   el.style.display = 'none';
