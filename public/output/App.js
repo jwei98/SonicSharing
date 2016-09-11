@@ -26872,22 +26872,8 @@ var play = function playFrequency() {
     var testBase64String = b64MimeType + b64FileName + document.getElementById('base64textarea').value;
 
     // create an array of the needed frequencies to play
-    var frequencyArray = [];
-	   var lightIndices = [];
-
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([2800, 0.1]);
-    frequencyArray.push([1950, 0.1]);
+    var frequencyArray = _.fill(Array(10), [2800, 0.1]);
+    var lightIndices = [];
 
     for (var i = 0; i < testBase64String.length; i++) {
         var index = b64.indexOf(testBase64String[i]);
